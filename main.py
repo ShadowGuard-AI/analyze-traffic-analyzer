@@ -28,7 +28,10 @@ def analyze_traffic(input_file, output_file=None):
         logging.info(f"Loading data from {input_file}")
         data = pd.read_csv(input_file)
 
-        # Perform basic analysis (example: count unique IPs and calculate total data transferred)
+        # "Unique IPs" counts distinct source_ip values only; destination
+        # addresses are not counted, and the column names are matched
+        # exactly, so a CSV with Source IP style headers lands in the
+        # KeyError handler below rather than being guessed at.
         logging.info("Performing analysis...")
         unique_ips = data['source_ip'].nunique()
         total_data_transferred = data['data_transferred'].sum()
@@ -73,7 +76,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# Usage Examples:
-# python main.py traffic_data.csv
-# python main.py traffic_data.csv --output_file analysis_report.csv

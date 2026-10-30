@@ -15,8 +15,10 @@ pip install -r requirements.txt
 ## Usage Examples
 
 ```
-python main.py -i <input_file> -o <output_file>
+python main.py <input_file> [--output_file <output_file>]
 ```
+
+The input CSV must have `source_ip` and `data_transferred` columns. The report counts distinct source IPs and sums the data transferred column.
 
 ## Security Warnings
 
