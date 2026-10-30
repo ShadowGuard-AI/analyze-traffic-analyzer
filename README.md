@@ -1,3 +1,5 @@
+![Banner](banner.png)
+
 # analyze-traffic-analyzer
 
 ## Project Description
