@@ -34,6 +34,11 @@ def analyze_traffic(input_file, output_file=None):
         # KeyError handler below rather than being guessed at.
         logging.info("Performing analysis...")
         unique_ips = data['source_ip'].nunique()
+        # The sum takes the column's own word for its unit and skips
+        # blank cells without a word, so a file where half the rows
+        # lack a value reports a clean total for the other half. A
+        # column of text values does not degrade the same way: it
+        # raises, and the run exits in the catch all below.
         total_data_transferred = data['data_transferred'].sum()
 
         # Prepare the analysis report
@@ -42,7 +47,10 @@ def analyze_traffic(input_file, output_file=None):
             "Total Data Transferred": total_data_transferred
         }
 
-        # Print the analysis report
+        # The report reaches the user through the log, not print, so
+        # with no output file the numbers exist only as log lines on
+        # stderr. That is this tool's whole interface, odd as it looks
+        # next to its sibling tools that print a table.
         logging.info("Analysis completed. Results:")
         for key, value in report.items():
             logging.info(f"{key}: {value}")
