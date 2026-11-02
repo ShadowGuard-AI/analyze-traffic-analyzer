@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 36" role="img" aria-label="Barometer needle divider, minor: a short rule with the needle stilled at the centre mark">
+<line x1="60" y1="18" x2="540" y2="18" stroke="#8f97c4" stroke-width="2.4"/>
+<circle cx="300" cy="18" r="4.4" fill="#f4f2ea"/>
+<line x1="300" y1="18" x2="300" y2="3" stroke="#d63384" stroke-width="3"/>
+</svg>

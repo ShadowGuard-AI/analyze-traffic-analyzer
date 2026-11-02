@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 44" role="img" aria-label="Barometer needle divider, major: a horizontal rule with a needle at its centre trembling a few degrees toward storm and returning">
+<line x1="0" y1="22" x2="1200" y2="22" stroke="#8f97c4" stroke-width="2.6"/>
+<circle cx="600" cy="22" r="5" fill="#f4f2ea"/>
+<g transform="translate(600 22)">
+<line x1="0" y1="0" x2="0" y2="-19" stroke="#d63384" stroke-width="3.4">
+<animateTransform attributeName="transform" type="rotate" values="0;-7;3;-5;0" dur="6s" repeatCount="indefinite"/>
+</line>
+</g>
+<line x1="566" y1="14" x2="566" y2="30" stroke="#8f97c4" stroke-width="2"/>
+<line x1="634" y1="14" x2="634" y2="30" stroke="#8f97c4" stroke-width="2"/>
+</svg>
