@@ -3,162 +3,92 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Analyze Traffic Analyzer: what it is, how it runs, where it stops</title>
-<meta name="description" content="Analyze network traffic patterns. Focused on Data analysis and reporting.">
+<title>analyze-traffic-analyzer: Catatumbo Eternal Lightning</title>
+<meta name="description" content="Analyze network traffic patterns. Focused on data analysis and reporting. A CSV count of distinct source IPs and summed data transferred, reported through log lines.">
 <style>
-:root {
-  --bg: #121418; --panel: #1c2028; --ink: #e8ecf0;
-  --mut: #252b36;
-  --acc: #5cc8e0; --acc2: #f0a05c;
-  --line: #1c2028;
-}
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink);
-  font-family: 'Book Antiqua', Georgia, serif; line-height: 1.55; }
-code, pre, .mono { font-family: 'Andale Mono', monospace; }
-a { color: var(--acc2); }
-.hero { padding: 3rem 6vw 1rem; }
-.hero img.banner { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; }
-.logo { width: 92px; height: 92px; border-radius: 18px;
-  border: 1px solid var(--line); }
-h1 { font-size: 2.4rem; margin: 0.4em 0 0.1em; }
-h2 { border-bottom: 2px solid var(--acc); padding-bottom: 0.2em;
-  margin-top: 2em; }
-.lede { font-size: 1.15rem; max-width: 62ch; }
-main { padding: 0 6vw 3rem; max-width: 1180px; margin: 0 auto; }
-.grid { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.card { background: var(--panel); border: 1px solid var(--line);
-  border-radius: 12px; padding: 1rem 1.2rem; }
-.card.pop { animation: rise 0.7s ease both; }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; } }
-pre.code { background: #101014; color: #e8e6df; padding: 1rem 1.2rem;
-  border-radius: 12px; overflow-x: auto; font-size: 0.86rem;
-  border-left: 5px solid var(--acc); }
-table { border-collapse: collapse; width: 100%; }
-td, th { border-bottom: 1px solid var(--line); padding: 0.45rem 0.6rem;
-  text-align: left; }
-.shots { display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-.shots img { width: 100%; height: auto; border: 1px solid var(--line);
-  border-radius: 10px; background: #f4f1e8; }
-footer { padding: 2rem 6vw; border-top: 1px solid var(--line);
-  color: var(--mut); }
-.rail { display: flex; gap: 1.2rem; align-items: flex-start; }
-.rail nav { position: sticky; top: 1rem; min-width: 180px; }
-@media (max-width: 760px) { .rail { flex-direction: column; }
-  .rail nav { position: static; } }
-@media (prefers-reduced-motion: reduce) {
-  .card.pop { animation: none; } * { scroll-behavior: auto; } }
+@font-face{font-family:'BIZ UDPMincho';src:url('fonts/BIZUDPMincho.ttf') format('truetype');}
+@font-face{font-family:'Alegreya Sans';src:url('fonts/AlegreyaSans.ttf') format('truetype');}
+:root{--indigo:#12162e;--panel:#1b2242;--star:#f4f2ea;--magenta:#d63384;--green:#6fc46e;--ink:#e9e7dc}
+*{box-sizing:border-box}body{margin:0;background:var(--indigo);color:var(--ink);font-family:'Alegreya Sans',sans-serif;line-height:1.65}
+h1,h2,h3{font-family:'BIZ UDPMincho',serif}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;background:var(--indigo)}
+.hero img.heroimg{width:100%;height:60vh;object-fit:cover;display:block}
+.hero .in{padding:1rem 6vw 2rem;max-width:1060px;margin:0 auto;width:100%}
+.logo{width:200px}
+main{padding:0 6vw 3rem;max-width:1060px;margin:0 auto}
+nav{display:flex;gap:.9rem;flex-wrap:wrap;margin:1.2rem 0}
+.shutter{display:inline-block;text-decoration:none;color:var(--star);font-family:'BIZ UDPMincho',serif;padding:.7rem 1.4rem;background:var(--panel);border:2px solid #9aa0b8;position:relative;transition:background .15s}
+.shutter:hover{box-shadow:inset 0 3px 0 var(--green)}
+.shutter:active{background:#0d1024;background-image:radial-gradient(circle at 0 0,rgba(0,0,0,.55),transparent 42%),radial-gradient(circle at 100% 0,rgba(0,0,0,.55),transparent 42%),radial-gradient(circle at 0 100%,rgba(0,0,0,.55),transparent 42%),radial-gradient(circle at 100% 100%,rgba(0,0,0,.55),transparent 42%)}
+.shutter:focus-visible{outline:2px solid var(--star);outline-offset:-5px}
+.logpage{background:var(--panel);background-image:repeating-linear-gradient(to bottom,transparent 0 30px,rgba(244,242,234,.13) 30px 31px);padding:.2rem 1.5rem 1.2rem;margin:1.8rem 0;border-left:3px solid #2c3464}
+.logpage h2{margin-top:.7rem}
+pre{background:#0b0e20;color:var(--star);padding:1rem;overflow-x:auto}
+a{color:#ffd7ec}
+a::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--star);margin-right:.55em;vertical-align:2px;box-shadow:0 0 5px rgba(244,242,234,.7)}
+a:hover::before{box-shadow:6px 0 0 -1px var(--star),0 0 5px rgba(244,242,234,.7)}
+a:active::before{box-shadow:0 0 5px rgba(244,242,234,.7)}
+.shutter::before{content:none}
+.horizon{height:14px;margin:2.2rem 0;position:relative;border-top:2px solid #454e7d}
+.horizon::after{content:'';position:absolute;right:12%;top:-2px;width:3px;height:14px;background:#8f97c4}
+.tick{border-left:5px solid var(--magenta);padding-left:1rem}
+.tally{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:640px}
+.tally div{border:1px solid rgba(244,242,234,.35);padding:.6rem .9rem}
+.tally b{font-family:'BIZ UDPMincho',serif;font-size:1.5rem;display:block;color:var(--star)}
+.wide{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+@media(max-width:760px){.wide{grid-template-columns:1fr}}
+footer{padding:1rem 6vw 2.4rem;max-width:1060px;margin:0 auto}
 </style>
 </head>
-<body class="layout-grid">
-<!-- This page exists for analyze-traffic-analyzer alone: the layout (console-grid),
-     the colors, and the type were picked for this project, not
-     shared with the other project pages. The code block below is
-     copied from the file it names, line for line. If it looks
-     plain, that is because the project is plain, and I would
-     rather the page match the project than dress it up. The one
-     thing I will not do here is oversell: what this project does
-     not do is stated on the page, not hidden from it. -->
+<body>
 <header class="hero">
-  <img class="logo" src="assets/logo.png" alt="Analyze Traffic Analyzer logo">
-  <img class="banner" src="assets/banner.png" alt="">
-  <h1>Analyze Traffic Analyzer</h1>
-  <p class="mono"><a href="https://github.com/ShadowGuard-AI/analyze-traffic-analyzer">github.com/ShadowGuard-AI/analyze-traffic-analyzer</a></p>
+<img class="heroimg" src="assets/intro-banner.png" alt="Lake Maracaibo at night: dark water, steady shore lights, one muted flash inside a cloud tower, no writing anywhere">
+<div class="in">
+<img class="logo" src="assets/logo.png" alt="One forked discharge over a black horizon line, above the name analyze-traffic-analyzer in star white">
+<h1>analyze-traffic-analyzer</h1>
+<p>A night watch log kept on a jetty table. Entries run down the page in the order a watch would write them.</p>
+<nav>
+<a class="shutter" href="#charge">Charge of the Watch</a>
+<a class="shutter" href="#kept">What the Log Is Kept From</a>
+<a class="shutter" href="#counted">The Counted Night</a>
+<a class="shutter" href="#rigging">Rigging and Running</a>
+</nav>
+</div>
 </header>
-
 <main>
-  <section class="rail">
-    <nav aria-label="on this page">
-      <p class="mono"><a href="#run">Run it</a><br>
-      <a href="#files">The files</a><br>
-      <a href="#sheets">The sheets</a><br>
-      <a href="https://github.com/ShadowGuard-AI/analyze-traffic-analyzer">The repo</a></p>
-    </nav>
-    <div>
-      <p class="lede">Analyze network traffic patterns. Focused on Data analysis and reporting.</p>
-      <div class="grid">
-        <div class="card pop"><h3>What it is</h3>
-          <p>Analyze Traffic Analyzer: 3 files, 104 counted
-          lines across Python 79, Markdown 25. One job, done in the
-          open, in files you can read.</p></div>
-        <div class="card pop"><h3>The biggest piece</h3>
-          <p><code>main.py</code> carries the most
-          lines. If the project grows, that file is where the growth
-          lands first, for better or worse.</p></div>
-        <div class="card pop"><h3>The honest gap</h3>
-          <p>No test files yet. That is the honest gap, and the roadmap in the visuals folder says what the first one should cover.</p></div>
-      </div>
-      <section id="run">
-        <h2>Run it</h2>
-        <p>The repo README has the exact commands for this one. The
-        shape is the shape for most of my projects: clone it, read the
-        top file first so you know what will happen, then run it on
-        something you do not mind breaking.</p>
-        <p class="mono">$ git clone https://github.com/ShadowGuard-AI/analyze-traffic-analyzer.git<br>$ cd analyze-traffic-analyzer</p>
-      </section>
-      
-  <section aria-label="real code">
-    <h2>The code, as it sits in the repo</h2>
-    <p>From <code>main.py</code>, line 7 on. I did
-    not tidy it for the page. What you see is what the file has.</p>
-    <pre class="code"><code>logging.basicConfig(level=logging.INFO, format=&#x27;%(asctime)s - %(levelname)s - %(message)s&#x27;)
-
-def setup_argparse():
-    &quot;&quot;&quot;
-    Sets up the argument parser for the script.
-    &quot;&quot;&quot;
-    parser = argparse.ArgumentParser(description=&quot;Analyze network traffic patterns.&quot;)
-    parser.add_argument(&quot;input_file&quot;, help=&quot;Path to the CSV file containing network traffic data.&quot;)
-    parser.add_argument(&quot;--output_file&quot;, help=&quot;Path to save the analysis report (optional).&quot;, default=None)
-    return parser
-
-def analyze_traffic(input_file, output_file=None):
-    &quot;&quot;&quot;
-    Analyzes network traffic patterns from a CSV file.
-
-    Args:
-        input_file (str): Path to the CSV file containing network traffic data.
-        output_file (str): Optional path to save the analysis report.
-    &quot;&quot;&quot;
-    try:
-        # Load the CSV file into a DataFrame
-        logging.info(f&quot;Loading data from {input_file}&quot;)</code></pre>
-  </section>
-      <section id="files">
-        <h2>The files that matter</h2>
-        <table><tr><th>File</th><th>Lines</th></tr>
-        <tr><td><code>main.py</code></td><td>79</td></tr>
-        <tr><td><code>README.md</code></td><td>25</td></tr>
-        <tr><td><code>LICENSE</code></td><td>0</td></tr>
-        </table>
-        <p>Names doing the work: <span class="mono">setup_argparse, analyze_traffic, main</span>.</p>
-      </section>
-      <section id="sheets">
-        <h2>Drawn by hand</h2>
-        <p>I sketch my projects on notebook paper so I have to
-        understand them well enough to draw them. The full set,
-        with the counts and how they were counted, is the
-        <a href="https://github.com/ShadowGuard-AI/analyze-traffic-analyzer/tree/main/analyze-traffic-analyzer-Visuals">analyze-traffic-analyzer-Visuals</a>
-        folder in the repo. Nothing is drawn over the binder holes.
-        That is a rule, not a style.</p>
-        <div class="shots">
-          <img src="assets/architecture.png" alt="Hand drawn architecture sheet for Analyze Traffic Analyzer">
-          <img src="assets/flowchart.png" alt="Hand drawn flowchart sheet for Analyze Traffic Analyzer">
-          <img src="assets/product-map.png" alt="Hand drawn product map sheet for Analyze Traffic Analyzer">
-        </div>
-      </section>
-    </div>
-  </section>
+<section class="logpage" id="charge"><h2>Charge of the Watch</h2>
+<p>analyze-traffic-analyzer analyses network traffic patterns, a short purpose the source files under data analysis and reporting. The entry says only that, in that plain form, because this tool's document is brief and the page is brief where its source is brief.</p>
+</section>
+<div class="horizon"></div>
+<section class="logpage" id="kept"><h2>What the Log Is Kept From</h2>
+<p>The input is a CSV file, and the log is kept from two columns the source insists on: <b>source_ip</b> and <b>data_transferred</b>. The report counts distinct source IP values and sums the data transferred column, and no other reading is offered. Destination addresses are not counted, a limit this entry records in the same paragraph, not in a footnote.</p>
+</section>
+<div class="horizon"></div>
+<section class="logpage" id="counted"><h2>The Counted Night</h2>
+<p>The one verified example the source gives, set as a ruled tally with its values exactly as documented and no second example invented to keep it company:</p>
+<div class="tally">
+<div><b>100, 50, 25</b>data values in the sample</div>
+<div class="tick"><b>2</b>unique IPs reported</div>
+<div class="tick"><b>175</b>total data transferred</div>
+</div>
+<p>Results are reported through log lines, not printed output. When an output file is given, the report is also written as a CSV with the columns Unique IPs and Total Data Transferred. Those two destinations are labelled here in the order the source presents them, log first and file second.</p>
+</section>
+<div class="horizon"></div>
+<section class="logpage" id="rigging"><h2>Rigging and Running</h2>
+<pre>pip install -r requirements.txt</pre>
+<pre>python3 main.py &lt;input_file&gt; [--output_file &lt;output_file&gt;]</pre>
+<p class="tick">A missing input file exits 1, and the column names must match exactly or the count the tool promises is not the count it can make.</p>
+<p><a href="https://github.com/ShadowGuard-AI/analyze-traffic-analyzer">The repository on GitHub</a></p>
+</section>
+<div class="horizon"></div>
+<section class="logpage"><h2>Standing Orders and Licence</h2>
+<div class="wide">
+<div><h3>Standing orders</h3><p>Do not use for malicious purposes.</p></div>
+<div><h3>Licence</h3><p>GNU General Public License v3.0 - Licensed to CY83R-3X71NC710N</p>
+<p>That attribution is reproduced word for word, because altering it on the page would hide a fact about the document.</p></div>
+</div>
+</section>
 </main>
-<footer>
-  <p>Analyze Traffic Analyzer is one of my projects. This page was written
-  from the repo itself on 2026-10-30: the counts are the
-  repo's counts, the code is the repo's code, and the gaps are the
-  repo's gaps.</p>
-</footer>
+<footer><p>Theme: Catatumbo Eternal Lightning. Type: BIZ UDPMincho for headings, Alegreya Sans for reading, both SIL Open Font License 1.1. The lettering reference Alienation was reference only and is not embedded.</p></footer>
 </body>
 </html>
